@@ -1,6 +1,8 @@
 require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
+
 const connectDB = require('./config/database');
 const config = require('./config/constants');
 const errorHandler = require('./middleware/errorHandler');
@@ -16,53 +18,119 @@ const dashboardRoutes = require('./routes/dashboard');
 
 const app = express();
 
+
+// =============================
+// CORS Configuration
+// =============================
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://crm-frontend-deploy.vercel.app'
+  ],
+  credentials: true
+}));
+
+
+// =============================
 // Middleware
-app.use(cors({ origin: config.CORS_ORIGIN }));
+// =============================
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Connect to database
+
+// =============================
+// Connect Database
+// =============================
 connectDB();
 
-// Initialize test data
+
+// =============================
+// Initialize Test Data
+// =============================
 initializeTestData(User);
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.json({
+
+// =============================
+// Health Check Routes
+// =============================
+app.get('/', (req, res) => {
+  res.status(200).json({
     success: true,
-    message: 'CRM Backend is running',
-    timestamp: new Date().toISOString(),
+    message: 'CRM Backend API is running',
+    health: '/api/health'
   });
 });
 
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'CRM Backend is running',
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'CRM Backend is running',
+    timestamp: new Date().toISOString()
+  });
+});
+
+
+// =============================
 // API Routes
+// =============================
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/leads', leadRoutes);
-app.use('/api/leads', noteRoutes);
+
+// Better route separation
+app.use('/api/notes', noteRoutes);
+
 app.use('/api/dashboard', dashboardRoutes);
 
-// 404 handler
-app.use((req, res, next) => {
-  const AppError = require('./utils/AppError');
-  next(new AppError(404, 'Route not found'));
+
+// =============================
+// 404 Route Handler
+// =============================
+app.use((req, res) => {
+  console.log(`404 Route: ${req.method} ${req.originalUrl}`);
+
+  res.status(404).json({
+    success: false,
+    message: 'Route not found'
+  });
 });
 
-// Global error handler
+
+// =============================
+// Global Error Handler
+// =============================
 app.use(errorHandler);
 
-// Start server
-const PORT = config.PORT;
+
+// =============================
+// Start Server
+// =============================
+const PORT = process.env.PORT || config.PORT;
+
 const server = app.listen(PORT, () => {
   console.log(`\n🚀 CRM Backend Server is running on port ${PORT}`);
   console.log(`Environment: ${config.NODE_ENV}`);
   console.log(`MongoDB: Connected`);
+  console.log(`Frontend Allowed: https://crm-frontend-deploy.vercel.app`);
   console.log(`\n📝 Test User: admin@example.com / password123\n`);
 });
 
-// Handle unhandled promise rejections
+
+// =============================
+// Handle Unhandled Rejections
+// =============================
 process.on('unhandledRejection', (err) => {
   console.error(`Error: ${err.message}`);
-  server.close(() => process.exit(1));
+
+  server.close(() => {
+    process.exit(1);
+  });
 });
