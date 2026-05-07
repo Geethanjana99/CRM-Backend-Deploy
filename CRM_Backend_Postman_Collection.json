@@ -1,0 +1,350 @@
+{
+  "info": {
+    "_postman_id": "crm-backend-collection",
+    "name": "CRM Backend API",
+    "description": "Complete CRM Backend API collection for testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"salesperson\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Leads",
+      "item": [
+        {
+          "name": "Create Lead",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"leadName\": \"Tech Company Representative\",\n  \"companyName\": \"Tech Solutions Inc\",\n  \"email\": \"contact@techsolutions.com\",\n  \"phoneNumber\": \"+1-555-123-4567\",\n  \"leadSource\": \"Website\",\n  \"assignedSalesperson\": \"{{salesperson_id}}\",\n  \"status\": \"New\",\n  \"estimatedDealValue\": 50000\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/leads",
+              "host": ["{{base_url}}"],
+              "path": ["api", "leads"]
+            }
+          }
+        },
+        {
+          "name": "Get All Leads",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/leads?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "leads"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "New",
+                  "disabled": true
+                },
+                {
+                  "key": "leadSource",
+                  "value": "Website",
+                  "disabled": true
+                },
+                {
+                  "key": "assignedSalesperson",
+                  "value": "{{salesperson_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "acme",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Lead by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/leads/{{lead_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "leads", "{{lead_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Lead",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"leadName\": \"Updated Lead Name\",\n  \"estimatedDealValue\": 75000\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/leads/{{lead_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "leads", "{{lead_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Lead Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Qualified\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/leads/{{lead_id}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "leads", "{{lead_id}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Delete Lead",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/leads/{{lead_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "leads", "{{lead_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notes",
+      "item": [
+        {
+          "name": "Add Note to Lead",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Client is very interested in our solution. Follow up next week.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/leads/{{lead_id}}/notes",
+              "host": ["{{base_url}}"],
+              "path": ["api", "leads", "{{lead_id}}", "notes"]
+            }
+          }
+        },
+        {
+          "name": "Get Lead Notes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/leads/{{lead_id}}/notes?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "leads", "{{lead_id}}", "notes"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Specific Note",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/leads/{{lead_id}}/notes/{{note_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "leads", "{{lead_id}}", "notes", "{{note_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Note",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Updated note content with new information.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/leads/{{lead_id}}/notes/{{note_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "leads", "{{lead_id}}", "notes", "{{note_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Note",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/leads/{{lead_id}}/notes/{{note_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "leads", "{{lead_id}}", "notes", "{{note_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Get Dashboard Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/dashboard/stats",
+              "host": ["{{base_url}}"],
+              "path": ["api", "dashboard", "stats"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "lead_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "note_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "salesperson_id",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
